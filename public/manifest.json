@@ -1,0 +1,10 @@
+{
+  "short_name": "Task Tracker",
+  "name": "Indigo Task Tracker",
+  "version": "0.0.1",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
