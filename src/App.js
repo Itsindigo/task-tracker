@@ -25,7 +25,6 @@ const App = () => {
       <h1>2025 Weekly Task Tracker</h1>
       {currentWeek && (
         <>
-          <h2>Current Week</h2>
           <WeekTable
             key={`${currentWeek.weekNumber}-${refreshTrigger}`}
             weekNumber={currentWeek.weekNumber}
