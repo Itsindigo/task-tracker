@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { saveCheckboxState, getCheckboxStates } from '../utils/storage';
 
-const WeekTable = ({ weekNumber, start, end }) => {
+const WeekTable = ({ weekNumber, start, end, refresh, id }) => {
   const [checkboxState, setCheckboxState] = useState({});
 
+  const fetchCheckboxStates = async () => {
+    const savedStates = await getCheckboxStates(weekNumber);
+    const stateMap = savedStates.reduce((acc, entry) => {
+      acc[`${entry.day}-${entry.activity}`] = entry.isChecked;
+      return acc;
+    }, {});
+    setCheckboxState(stateMap);
+  };
+
   useEffect(() => {
-    const fetchCheckboxStates = async () => {
-      const savedStates = await getCheckboxStates(weekNumber);
-      const stateMap = savedStates.reduce((acc, entry) => {
-        acc[`${entry.day}-${entry.activity}`] = entry.isChecked;
-        return acc;
-      }, {});
-      setCheckboxState(stateMap);
-    };
     fetchCheckboxStates();
-  }, [weekNumber]);
+  }, [weekNumber, refresh]);
 
   const handleCheckboxChange = (day, activity) => {
     const key = `${day}-${activity}`;
@@ -26,6 +27,10 @@ const WeekTable = ({ weekNumber, start, end }) => {
     }));
 
     saveCheckboxState(weekNumber, day, activity, isChecked);
+    if (refresh) {
+      refresh()
+      fetchCheckboxStates()
+    }
   };
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -36,7 +41,7 @@ const WeekTable = ({ weekNumber, start, end }) => {
   ];
 
   return (
-    <div id={`week-${weekNumber}`} style={{ marginBottom: '2rem' }}>
+    <div id={id} style={{ marginBottom: '2rem' }}>
       <h2>Week {weekNumber} ({start} - {end})</h2>
       <table border="1" cellPadding="5">
         <thead>
